@@ -1,6 +1,8 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
-  publicPath: '/Shalom-Trendy/trendyfront/',
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/front-Shalom/'
+    : '/',
   transpileDependencies: true,
   productionSourceMap: false
 })
