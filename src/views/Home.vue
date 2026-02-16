@@ -1,4 +1,35 @@
 <template>
+    <dialog ref="dialogRef" class="cart-dialog" @click="handleBackdropClick">
+        <div class="cart-header">
+            <h2>Tu Carrito de Compras</h2>
+            <button class="close-dialog-btn" @click="closeDialog">X</button>
+        </div>
+        <div class="cart-items-container" v-if="carShop.length > 0">
+            <div v-for="(item, index) in aggregatedCarShop" :key="index" class="cart-item">
+                <div class="cart-item-img-container">
+                    <img :src="publicPath + (item.path.startsWith('/') ? item.path.slice(1) : item.path)" alt="Producto" class="cart-item-img">
+                    <span class="item-quantity" v-if="item.count > 1">{{ item.count }}</span>
+                </div>
+                <div class="cart-item-info">
+                    <p class="item-name">{{ item.path.split('/').pop()?.split('.')[0] || 'Producto' }}</p>
+                    <p class="item-count-text">Cantidad: {{ item.count }}</p>
+                </div>
+                <div class="cart-item-actions">
+                    <button @click="removeItemFromDialog(item.path)" class="remove-item-btn">Eliminar</button>
+                </div>
+            </div>
+        </div>
+        <div v-else class="empty-cart-message">
+            <p>Tu carrito está vacío.</p>
+        </div>
+        <div class="cart-footer">
+            <button class="whatsapp-cta-btn" @click="sendWhatsAppMessage">
+                <img :src="publicPath + 'iconos/whatsapp.png'" alt="whatsapp" class="whatsapp-icon">
+                <span>Consultar por WhatsApp</span>
+            </button>
+            <button class="continue-shopping-btn" @click="closeDialog">Seguir Comprando</button>
+        </div>
+    </dialog>
     <section class="layout-Info">
         <header class="infoBar">
             <section class="Title">
@@ -12,7 +43,7 @@
                 <button>Ingresar</button>
             </section>
             <div class="shopping-cart" :style="{ opacity: carShop.length > 0 ? '1' : '0.5' }">
-                <button :disabled="carShop.length === 0"><img :src="publicPath + 'iconos/shopping-cart.png'" alt="carrito"></button>
+                <button :disabled="carShop.length === 0" @click="openDialog"><img :src="publicPath + 'iconos/shopping-cart.png'" alt="carrito"></button>
                 <h4>{{ carShop.length }}</h4>
             </div>
         </header>
@@ -46,7 +77,7 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, Directive } from 'vue';
+import { ref, defineComponent, Directive, computed } from 'vue';
 
 const vReveal: Directive = {
     mounted(el) {
@@ -143,6 +174,72 @@ export default defineComponent({
         ];
 
         const carShop= ref<string[]>([]);
+        const dialogRef = ref<HTMLDialogElement | null>(null);
+
+        const openDialog = () => {
+            if (dialogRef.value) {
+                (dialogRef.value as any).showModal();
+            }
+        };
+
+        const closeDialog = () => {
+            if (dialogRef.value) {
+                (dialogRef.value as any).close();
+            }
+        };
+
+        const handleBackdropClick = (event: MouseEvent) => {
+            const dialog = dialogRef.value;
+            if (dialog) {
+                const rect = dialog.getBoundingClientRect();
+                const isInDialog = (
+                    rect.top <= event.clientY &&
+                    event.clientY <= rect.top + rect.height &&
+                    rect.left <= event.clientX &&
+                    event.clientX <= rect.left + rect.width
+                );
+                if (!isInDialog) {
+                    (dialog as any).close();
+                }
+            }
+        };
+
+        const removeItemFromDialog = (path: string) => {
+            const idx = carShop.value.lastIndexOf(path);
+            if (idx > -1) {
+                carShop.value.splice(idx, 1);
+            }
+        };
+
+        const aggregatedCarShop = computed(() => {
+            const counts: { [path: string]: number } = {};
+            carShop.value.forEach(path => {
+                counts[path] = (counts[path] || 0) + 1;
+            });
+            return Object.entries(counts).map(([path, count]) => ({
+                path,
+                count
+            }));
+        });
+
+        const sendWhatsAppMessage = () => {
+            if (aggregatedCarShop.value.length === 0) return;
+
+            let message = "Hola, me gustaría consultar precios y disponibilidad de:\n";
+            
+            aggregatedCarShop.value.forEach(item => {
+                const fileName = item.path.split('/').pop()?.split('.')[0] || 'Producto';
+                const formattedName = fileName.replace(/-/g, ' ').replace(/_/g, ' ');
+                message += `- ${formattedName} (Cantidad: ${item.count})\n`;
+            });
+
+            message += `\nTotal: ${carShop.value.length} artículos.`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/584242066580?text=${encodedMessage}`;
+            
+            window.open(whatsappUrl, '_blank');
+        };
 
         const addToCarShop = (categoryObj: Category, index: number) => {
             const arr = getCategoryArray(categoryObj);
@@ -268,7 +365,14 @@ export default defineComponent({
             handleImageClick,
             addToCarShop,
             removeFromCarShop,
-            carShop
+            carShop,
+            dialogRef,
+            openDialog,
+            closeDialog,
+            handleBackdropClick,
+            removeItemFromDialog,
+            aggregatedCarShop,
+            sendWhatsAppMessage
         }
     }
 });
