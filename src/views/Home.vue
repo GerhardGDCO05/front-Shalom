@@ -2,7 +2,7 @@
     <section class="layout-Info">
         <header class="infoBar">
             <section class="Title">
-                <img class="logo" :src="publicPath + 'iconos/logoShalom.jpg'" alt="logo ShalomTrendy">
+                <img class="logo" :src="publicPath + 'iconos/logoShalom.jpg'" alt="logo Shalom Trendy">
                 <div>
                     <h1>ShalomTrendy</h1>
                     <p :style="{fontFamily:'sans-serif', fontWeight:'bold'}">Moda Femenina Moderna</p>
@@ -11,15 +11,28 @@
             <section class="Bar">
                 <button>Ingresar</button>
             </section>
+            <div class="shopping-cart" :style="{ opacity: carShop.length > 0 ? '1' : '0.5' }">
+                <button :disabled="carShop.length === 0"><img :src="publicPath + 'iconos/shopping-cart.png'" alt="carrito"></button>
+                <h4>{{ carShop.length }}</h4>
+            </div>
         </header>
         <article class="carrousel-Container">
             <section class="carrousel">
-                <div v-for="(categoryObj, categoryIndex) in topsList" :key="categoryIndex" class="category-container">
-                    <button class="prev-button" @click="prevImage(categoryIndex)"></button>
+                <div v-for="(categoryObj, categoryIndex) in topsList" :key="categoryIndex" class="category-container"   >
                     <img class="img-product" :src="getCurrentImage(categoryObj, currentIndices[categoryIndex])" alt="" v-reveal
-                     :style="{ transition: 'all 0.9s ease' }">
-                    <button class="next-button" @click="nextImage(categoryIndex, getCategoryLength(categoryObj))"></button>
+                     :style="{ transition: 'all 0.9s ease' }"
+                     @touchstart="handleTouchStart"
+                     @touchend="handleTouchEnd($event, categoryIndex, getCategoryLength(categoryObj))"
+                     @click="handleImageClick(categoryIndex, getCategoryLength(categoryObj))">
+                    <div class="buttons-container"> 
+                        <button class="prev-button" @click="prevImage(categoryIndex)"></button>
+                        <button class="next-button" @click="nextImage(categoryIndex, getCategoryLength(categoryObj))"></button>
+                    </div>
                     <h3>{{ getCategoryName(categoryObj) }}</h3>
+                    <div class="buttons-carshop" :style="{display: 'flex', justifyContent: 'space-between'}">
+                        <button @click="addToCarShop(categoryObj, currentIndices[categoryIndex])">Agregar al Carrito</button>
+                        <button @click="removeFromCarShop(categoryObj, currentIndices[categoryIndex])">Eliminar del Carrito</button>
+                    </div>
                 </div>
                 
             </section>
@@ -129,6 +142,26 @@ export default defineComponent({
             {"Modelos": modelosList},
         ];
 
+        const carShop= ref<string[]>([]);
+
+        const addToCarShop = (categoryObj: Category, index: number) => {
+            const arr = getCategoryArray(categoryObj);
+            const path = arr[index];
+            carShop.value.push(path);
+            console.log(carShop.value);
+        };
+
+        const removeFromCarShop = (categoryObj: Category, index: number) => {
+            const arr = getCategoryArray(categoryObj);
+            const path = arr[index];
+            const idx = carShop.value.lastIndexOf(path);
+            if (idx > -1) {
+                carShop.value.splice(idx, 1);
+            }
+            console.log(carShop.value);
+        };
+
+
         // Array para guardar el índice actual de cada categoría
         const currentIndices = ref(topsList.map(() => 0));
 
@@ -191,6 +224,36 @@ export default defineComponent({
             }
         };
         
+        const touchStartX = ref(0);
+        const touchEndX = ref(0);
+        const lastTouchTime = ref(0);
+
+        const handleTouchStart = (event: TouchEvent) => {
+            touchStartX.value = event.changedTouches[0].screenX;
+            lastTouchTime.value = Date.now();
+        };
+
+        const handleTouchEnd = (event: TouchEvent, categoryIndex: number, categoryLength: number) => {
+            touchEndX.value = event.changedTouches[0].screenX;
+            handleGesture(categoryIndex, categoryLength);
+        };
+
+        const handleGesture = (categoryIndex: number, categoryLength: number) => {
+            if (touchEndX.value < touchStartX.value - 50) {
+                nextImage(categoryIndex, categoryLength);
+            }
+            if (touchEndX.value > touchStartX.value + 50) {
+                prevImage(categoryIndex);
+            }
+        };
+
+        const handleImageClick = (categoryIndex: number, categoryLength: number) => {
+            const isRecentTouch = Date.now() - lastTouchTime.value < 500;
+            if (!isRecentTouch || Math.abs(touchEndX.value - touchStartX.value) < 10) {
+                 nextImage(categoryIndex, categoryLength);
+            }
+        };
+
         return {
             topsList,
             currentIndices,
@@ -200,6 +263,12 @@ export default defineComponent({
             nextImage,
             prevImage,
             publicPath,
+            handleTouchStart,
+            handleTouchEnd,
+            handleImageClick,
+            addToCarShop,
+            removeFromCarShop,
+            carShop
         }
     }
 });

@@ -3,10 +3,9 @@ body,
 #app {
     margin: 0;
     padding: 0;
-    background: linear-gradient(#c278ec, #a00ebd);
-     font-family: 'Courier New', Courier, monospace;
-    color: #fff;
-
+    background: linear-gradient(180deg, #FAFAFA 0%, #F3F4F6 100%);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', sans-serif;
+    color: #2D2D2D;
 }
 
 #app {

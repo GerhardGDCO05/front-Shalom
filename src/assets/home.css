@@ -3,23 +3,26 @@
     height: 100%;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 10fr;
+    grid-template-rows: auto 1fr;
     overflow-x: hidden;
 }
 
+/* ===== HEADER SECTION ===== */
 .infoBar {
     grid-column: 1/2;
     grid-row: 1/2;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     grid-template-rows: 1fr;
     justify-content: center;
     align-items: center;
     position: sticky;
     top: 0;
     z-index: 100;
-    background: linear-gradient(#c278ec, #a00ebd);
-    border-bottom: .5em solid #884196;
+    background: #FFFFFF;
+    border-bottom: 1px solid #E5E7EB;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    padding: 1rem 0;
 }
 
 .Title {
@@ -28,20 +31,37 @@
     grid-column: 1/3;
     grid-row: 1/2;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: auto 1fr;
     grid-template-rows: 1fr;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
-    gap: 1em;
-    margin: .5em;
+    gap: 1.5rem;
+    padding: 0 2rem;
+}
+
+.Title h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2D2D2D;
+    margin: 0;
+}
+
+.Title p {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6B7280;
+    margin: 0.25rem 0 0 0;
 }
 
 .logo {
-    width: auto;
-    height: auto;
+    width: 3.5rem;
+    height: 3.5rem;
     border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* ===== NAVIGATION BAR ===== */
 .Bar {
     width: 100%;
     height: 100%;
@@ -55,37 +75,101 @@
 }
 
 .Bar button {
-    width: 30%;
-    height: 60%;
-    border-radius: 2em;
-    border: none;
-    background-color: #fff;
-    color: #953ad1;
-    font-size: 1.2em;
-    font-weight: bold;
+    padding: 0.75rem 2rem;
+    border-radius: 0.5rem;
+    border: 1px solid #E5E7EB;
+    background-color: #FFFFFF;
+    color: #2D2D2D;
+    font-size: 0.95rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease-in-out;
     margin: auto;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .Bar button:hover {
-    background-color: transparent;
-    color: #fff;
-    border: .2em solid #fff;
-    scale: 1.1;
-    rotate: 360deg;
-    transition: all 0.3s ease;
-
+    background-color: #8B5CF6;
+    color: #FFFFFF;
+    border-color: #8B5CF6;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(139, 92, 246, 0.2);
 }
 
+/* ===== SHOPPING CART ===== */
+.shopping-cart {
+    grid-column: 4/5;
+    grid-row: 1/2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    position: relative;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.shopping-cart button {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.5rem;
+    border: 1px solid #E5E7EB;
+    background-color: #FFFFFF;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.shopping-cart button:not(:disabled):hover {
+    background-color: #F9FAFB;
+    border-color: #8B5CF6;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.shopping-cart button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.shopping-cart button img {
+    width: 1.5rem;
+    height: 1.5rem;
+    object-fit: contain;
+}
+
+.shopping-cart h4 {
+    position: absolute;
+    top: -0.25rem;
+    right: 0.25rem;
+    background: #8B5CF6;
+    color: #FFFFFF;
+    font-size: 0.7rem;
+    font-weight: 700;
+    min-width: 1.125rem;
+    height: 1.125rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.125rem;
+    box-shadow: 0 2px 4px rgba(139, 92, 246, 0.3);
+    margin: 0;
+    z-index: 10;
+}
+
+/* ===== CAROUSEL CONTAINER ===== */
 .carrousel-Container {
     grid-template-columns: 1/2;
     grid-template-rows: 2/3;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 10fr 1fr;
+    grid-template-rows: 1fr auto;
     justify-content: center;
     align-items: center;
+    padding: 1rem 1rem;
 }
 
 .carrousel {
@@ -95,89 +179,159 @@
     grid-template-columns: repeat(3, 1fr);
     grid-auto-rows: 1fr;
     justify-content: center;
-    align-items: center;
+    align-items: start;
+    gap: 2rem;
 }
 
 .carrousel img {
-    width: 60%;
-    height: 60%;
-    border-radius: 10%;
+    width: 100%;
+    height: auto;
+    border-radius: 0.75rem;
     margin: auto;
 }
 
+/* ===== PRODUCT CARDS ===== */
 .category-container {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 2em;
-    margin: 2em 2em;
+    justify-content: flex-start;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 2rem 1.5rem;
     position: relative;
+    background: #FFFFFF;
+    border-radius: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.category-container:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
 }
 
 .category-container h3 {
     position: absolute;
-    top: -1em;
+    top: 1rem;
     left: 50%;
     transform: translateX(-50%);
     z-index: 30;
     margin: 0;
-    padding: 0.5em 1em;
-    background-color: rgba(149, 58, 209, 0.9);
-    color: white;
-    border-radius: 0.5em;
-    font-size: 1.3em;
+    padding: 0.5rem 1.25rem;
+    background-color: #8B5CF6;
+    color: #FFFFFF;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
     white-space: nowrap;
     text-align: center;
-    min-width: max-content;
-    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(139, 92, 246, 0.3);
+    letter-spacing: 0.025em;
 }
 
 .category-container img {
-    max-width: 25em;
-    height: auto;
+    width: 100%;
+    height: 30rem;
+    object-fit: cover;
+    object-position: top;
     z-index: 10;
+    border-radius: 0.5rem;
+    margin-top: 2rem;
 }
 
 .category-container:last-child img {
-    max-width: 25em;
-    height: 20em;
-    object-fit: cover;
-    max-width: 30em;
-    max-height: 30em;
+    height: 30rem;
+    object-position: center;
 }
 
 .category-container button {
-    padding: 1em 1.5em;
+    padding: 0.75rem 1.5rem;
     border: none;
-    border-radius: 4em;
     cursor: pointer;
-    height: 22.8em;
     z-index: 20;
-    width: 4em;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease-in-out;
+}
+
+/* ===== NAVIGATION BUTTONS ===== */
+.buttons-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+.prev-button,
+.next-button {
+    background-color: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    width: 2.5rem;
+    height: 2.5rem;
+    background-size: 1rem;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .prev-button {
-    transform: translateX(7.6em);
-    background: url(../../public/iconos/left-arrow.png) center center no-repeat;
-
+    background-image: url(../../public/iconos/left-arrow.png);
 }
 
 .next-button {
-    transform: translateX(-7.5em);
-    background: url(../../public/iconos/right-arrow.png) center center no-repeat;
+    background-image: url(../../public/iconos/right-arrow.png);
 }
 
-.category-container button:hover {
-    opacity: .5;
-    background-color: aliceblue;
-
+.prev-button:hover,
+.next-button:hover {
+    background-color: #8B5CF6;
+    border-color: #8B5CF6;
+    opacity: 1;
+    transform: scale(1.05);
+    box-shadow: 0 2px 4px rgba(139, 92, 246, 0.3);
 }
 
-/* Reveal Effect Styles */
+/* ===== CART BUTTONS ===== */
+.buttons-carshop {
+    display: flex;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.buttons-carshop button {
+    flex: 1;
+    background-color: #FFFFFF;
+    color: #2D2D2D;
+    border: 1px solid #E5E7EB;
+}
+
+.buttons-carshop button:first-child {
+    background-color: #8B5CF6;
+    color: #FFFFFF;
+    border-color: #8B5CF6;
+}
+
+.buttons-carshop button:first-child:hover {
+    background-color: #7C3AED;
+    border-color: #7C3AED;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(139, 92, 246, 0.3);
+}
+
+.buttons-carshop button:last-child:hover {
+    background-color: #FEE2E2;
+    color: #DC2626;
+    border-color: #FCA5A5;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(220, 38, 38, 0.2);
+}
+
+/* ===== REVEAL EFFECT ===== */
 .reveal-hidden {
     opacity: 0;
-    transform: translateY(50px);
-    transition: all 0.8s ease-out;
+    transform: translateY(30px);
+    transition: all 0.6s ease-out;
 }
 
 .reveal-show {
@@ -185,6 +339,7 @@
     transform: translateY(0);
 }
 
+/* ===== SOCIAL MEDIA ===== */
 .social-Web {
     grid-template-columns: 1/2;
     grid-template-rows: 2/3;
@@ -193,104 +348,106 @@
     grid-template-rows: 1fr;
     justify-content: center;
     align-items: center;
+    padding: 2rem 0;
+    gap: 1.5rem;
 }
 
 .social-Web img {
     margin: auto;
-    transition: transform .2s ease-in-out;
+    width: 2.5rem;
+    height: 2.5rem;
+    transition: transform 0.2s ease-in-out;
+    cursor: pointer;
+    filter: grayscale(20%);
 }
 
 .social-Web img:hover {
-    transform: scale(1.5) rotate(360deg);
+    transform: scale(1.15);
+    filter: grayscale(0%);
 }
 
-@media (max-width: 820px) {
 
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 820px) {
     .infoBar {
-        grid-template-columns: 3fr, 1fr;
+        grid-template-columns: 2fr 1fr 1fr;
+        padding: 0.75rem 0;
+    }
+
+    .Title {
+        grid-column: 1/2;
+        padding: 0 1rem;
     }
 
     .Title div {
         display: none;
     }
 
+    .Bar {
+        grid-column: 2/3;
+    }
+
     .Bar button {
-        width: 90%;
-        margin: auto;
+        width: 100%;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
     }
 
     .Bar button:hover {
         transform: none;
-        rotate: 0deg;
-        scale: 1;
     }
 
+    .shopping-cart {
+        grid-column: 3/4;
+    }
 
     .carrousel {
         display: flex;
         flex-direction: column;
-        gap: .5em;
-    }
-
-    .prev-button {
-        transform: translateX(15em);
-        background: url(../../public/iconos/left-arrow.png) center center no-repeat;
-    }
-
-    .next-button {
-
-        transform: translateY(-15em);
-        background: url(../../public/iconos/right-arrow.png) center center no-repeat;
+        gap: 1.5rem;
+        padding: 1rem;
     }
 
     .category-container {
-        flex-direction: column;
-        gap: .5em;
-        width: 100%;
+        width: 90%;
+        padding: 1.5rem 1rem;
     }
 
     .category-container h3 {
         position: static;
         transform: none;
-    }
-
-    .category-container button {
-        width: 100%;
-        height: auto;
-        padding: 1em;
+        margin-bottom: 0.5rem;
     }
 
     .category-container img {
-        width: 90%;
-        height: auto;
-        z-index: 10;
+        width: 80%;
+        height: 20rem;
+        margin-top: 0;
+        object-position: center;
     }
 
-
     .category-container:last-child img {
-        width: 90%;
-        height: 20em;
-        object-fit: cover;
-        max-width: 30em;
-        max-height: 30em;
+        height: 20rem;
+    }
+
+    .buttons-container {
+        gap: 0.75rem;
     }
 
     .prev-button,
     .next-button {
-        transform: none;
+        width: 2rem;
+        height: 2rem;
     }
 
     .social-Web {
         display: flex;
         flex-direction: row;
-        gap: 2em;
-        align-items: center;
-        justify-content: center;
+
     }
 
     .social-Web img:hover {
-        transform: none;
-        rotate: 0deg;
-        scale: 1;
+        transform: scale(1.1);
     }
 }
