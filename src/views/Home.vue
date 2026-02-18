@@ -11,7 +11,7 @@
                     <span class="item-quantity" v-if="item.count > 1">{{ item.count }}</span>
                 </div>
                 <div class="cart-item-info">
-                    <p class="item-name">{{ item.path.split('/').pop()?.split('.')[0] || 'Producto' }}</p>
+                    <p class="item-name">{{ item.displayName }}</p>
                     <p class="item-count-text">Cantidad: {{ item.count }}</p>
                 </div>
                 <div class="cart-item-actions">
@@ -216,10 +216,34 @@ export default defineComponent({
             carShop.value.forEach(path => {
                 counts[path] = (counts[path] || 0) + 1;
             });
-            return Object.entries(counts).map(([path, count]) => ({
-                path,
-                count
-            }));
+
+            return Object.entries(counts).map(([path, count]) => {
+                // Buscar la categoría a la que pertenece el producto
+                let categoryName = "";
+                for (const catObj of topsList) {
+                    const key = Object.keys(catObj)[0];
+                    if (catObj[key].includes(path)) {
+                        categoryName = key;
+                        break;
+                    }
+                }
+
+                let displayName = "";
+                // Si la categoría es "Modelos" usamos el nombre del archivo porque es descriptivo
+                // Si es cualquier otra categoría, usamos el nombre de la categoría (h3)
+                if (categoryName === "Modelos" || !categoryName) {
+                    const fileName = path.split('/').pop()?.split('.')[0] || 'Producto';
+                    displayName = fileName.replace(/-/g, ' ').replace(/_/g, ' ');
+                } else {
+                    displayName = categoryName;
+                }
+
+                return {
+                    path,
+                    count,
+                    displayName
+                };
+            });
         });
 
         const sendWhatsAppMessage = () => {
@@ -228,9 +252,7 @@ export default defineComponent({
             let message = "Hola, me gustaría consultar precios y disponibilidad de:\n";
             
             aggregatedCarShop.value.forEach(item => {
-                const fileName = item.path.split('/').pop()?.split('.')[0] || 'Producto';
-                const formattedName = fileName.replace(/-/g, ' ').replace(/_/g, ' ');
-                message += `- ${formattedName} (Cantidad: ${item.count})\n`;
+                message += `- ${item.displayName} (Cantidad: ${item.count})\n`;
             });
 
             message += `\nTotal: ${carShop.value.length} artículos.`;
