@@ -40,7 +40,7 @@
                 </div>
             </section>
             <section class="Bar">
-                <button>Ingresar</button>
+                <button class="ingresar-Button">Ingresar</button>
             </section>
             <div class="shopping-cart" :style="{ opacity: carShop.length > 0 ? '1' : '0.5' }">
                 <button :disabled="carShop.length === 0" @click="openDialog"><img :src="publicPath + 'iconos/shopping-cart.png'" alt="carrito"></button>
@@ -60,7 +60,7 @@
                         <button class="next-button" @click="nextImage(categoryIndex, getCategoryLength(categoryObj))"></button>
                     </div>
                     <h3>{{ getCategoryName(categoryObj) }}</h3>
-                    <div class="buttons-carshop" :style="{display: 'flex', justifyContent: 'space-between'}">
+                    <div class="buttons-carshop" v-if="getCategoryName(categoryObj) !== 'Modelos'" :style="{display: 'flex', justifyContent: 'space-between'}">
                         <button @click="addToCarShop(categoryObj, currentIndices[categoryIndex])">Agregar al Carrito</button>
                         <button @click="removeFromCarShop(categoryObj, currentIndices[categoryIndex])">Eliminar del Carrito</button>
                     </div>
@@ -252,7 +252,7 @@ export default defineComponent({
             let message = "Hola, me gustaría consultar precios y disponibilidad de:\n";
             
             aggregatedCarShop.value.forEach(item => {
-                message += `- ${item.displayName} (Cantidad: ${item.count})\n`;
+                message += `- ${item.displayName} (Cantidad: ${item.count})\n\n`;
             });
 
             message += `\nTotal: ${carShop.value.length} artículos.`;
@@ -372,6 +372,13 @@ export default defineComponent({
                  nextImage(categoryIndex, categoryLength);
             }
         };
+
+        addEventListener("hover", (event) => {
+            const target = event.target as HTMLElement;
+            if (target.classList.contains("ingresar-Button")) {
+                sendWhatsAppMessage();
+            }
+        });
 
         return {
             topsList,
